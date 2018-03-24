@@ -1,7 +1,7 @@
 # Webpack
 Utilities for a modular Webpack configuration.
 
-## Example Configuration:
+### Example Configuration:
 ```javascript
 import webpack from 'webpack';
 
