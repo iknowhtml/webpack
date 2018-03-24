@@ -2,8 +2,8 @@
 Utilities for a modular Webpack configuration.
 
 ## Example Configuration:
-```
-ximport webpack from 'webpack';
+```javascript
+import webpack from 'webpack';
 
 import paths from './webpack/paths';
 
