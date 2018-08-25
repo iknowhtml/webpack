@@ -1,17 +1,16 @@
 # Webpack
-Utilities for a modular Webpack configuration.
+
+Utilities for a modular Webpack configuration using functional programming paradigms.
 
 ### Example Configuration:
+
 ```javascript
 import webpack from 'webpack';
 
 import paths from './webpack/paths';
 
 import { babel, fonts, postCSS } from './webpack/partials/modules';
-import {
-  htmlWebpack,
-  hotModuleReplacement,
-} from './webpack/partials/plugins';
+import { htmlWebpack, hotModuleReplacement } from './webpack/partials/plugins';
 import { devServer } from './webpack/partials/configurations';
 import { splitChunks, runtimeChunk } from './webpack/partials/optimizations';
 
