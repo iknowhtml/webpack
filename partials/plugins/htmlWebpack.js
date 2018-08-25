@@ -20,7 +20,7 @@ const htmlWebpack = (userOptions = {}) => {
       hash: true,
     };
 
-    const options = Object.assign({}, defaultOptions, userOptions);
+    const options = { ...defaultOptions, ...userOptions };
 
     return partial({ plugin: new htmlWebpackPlugin(options) }, config);
   };

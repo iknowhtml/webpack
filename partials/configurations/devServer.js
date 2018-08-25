@@ -11,7 +11,7 @@ const devServer = (userOptions = {}) => config => {
     overlay: { errors: true, warnings: true },
   };
 
-  const options = Object.assign({}, userOptions, defaultOptions);
+  const options = { ...defaultOptions, ...userOptions };
 
   return partial({ configuration: { devServer: options } }, config);
 };
