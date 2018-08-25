@@ -4,13 +4,6 @@ import partial from '../partial';
 import paths from '../../paths';
 
 const babel = (options = {}) => {
-  installPackages([
-    'babel-loader',
-    'babel-polyfill',
-    'babel-preset-react',
-    'babel-plugin-transform-object-rest-spread',
-    'babel-plugin-transform-class-properties',
-  ]);
   return config => {
     return partial(
       {
