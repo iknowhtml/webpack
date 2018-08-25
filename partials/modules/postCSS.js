@@ -4,17 +4,17 @@ import partial from '../partial';
 
 const postCSS = (userOptions = {}) => {
   installPackages([
-    'extract-text-webpack-plugin',
+    'mini-css-extract-plugin',
     'style-loader',
     'css-loader',
     'postcss-loader',
     'postcss-import',
-    'postcss-cssnext',
+    'postcss-preset-env',
     'css-hot-loader',
   ]);
 
   return config => {
-    const ExtractTextPlugin = require('extract-text-webpack-plugin');
+    const MiniCssExtractPlugin = require('mini-css-extract-plugin');
     const defaultOptions = {
       options: {},
       minimize: true,
@@ -25,9 +25,6 @@ const postCSS = (userOptions = {}) => {
       defaultOptions,
       userOptions,
     );
-
-    // allChunks will only be true if minimize is false because this requirement is strictly for in a development environment. Resolves issue with Webpack loading modules out of order when using webpack-dev-server
-    const allChunks = minimize ? false : true;
 
     const cssLoader = {
       loader: 'css-loader',
@@ -42,10 +39,7 @@ const postCSS = (userOptions = {}) => {
       loader: 'postcss-loader',
       options: {
         indent: 'postcss',
-        plugins: loader => [
-          require('postcss-import')({ root: loader.resourcePath }),
-          require('postcss-cssnext')(),
-        ],
+        plugins: loader => [require('postcss-preset-env')()],
       },
     };
 
@@ -55,15 +49,12 @@ const postCSS = (userOptions = {}) => {
       {
         rule: {
           test: /.css$/,
-          use: ['css-hot-loader'].concat(
-            ExtractTextPlugin.extract({
-              fallback: 'style-loader',
-              use: loaderList,
-            }),
-            ...options,
-          ),
+          use: ['css-hot-loader', MiniCssExtractPlugin.loader, ...loaderList],
         },
-        plugin: new ExtractTextPlugin({ filename: '[name].css', allChunks }),
+        plugin: new MiniCssExtractPlugin({
+          filename: '[name].css',
+          chunkFilename: '[id].css',
+        }),
       },
       config,
     );
