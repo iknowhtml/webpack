@@ -16,11 +16,10 @@ const postCSS = (userOptions = {}) => {
   return config => {
     const MiniCssExtractPlugin = require('mini-css-extract-plugin');
     const defaultOptions = {
-      options: {},
-      minimize: true,
+      filename: '[name].css',
     };
 
-    const { options, minimize } = Object.assign(
+    const { filename, minimize } = Object.assign(
       {},
       defaultOptions,
       userOptions,
@@ -31,15 +30,21 @@ const postCSS = (userOptions = {}) => {
       options: {
         modules: true,
         localIdentName: '[name]__[local]__[hash:base64:5]',
-        minimize,
       },
     };
+
+    const postCssPresetEnv = require('postcss-preset-env');
+    const cssNano = require('cssnano');
+
+    const common = [postCssPresetEnv()];
+    const development = [];
+    const production = [...common, cssNano()]
 
     const postCSSLoader = {
       loader: 'postcss-loader',
       options: {
         indent: 'postcss',
-        plugins: loader => [require('postcss-preset-env')()],
+        plugins: loader => process.env.NODE_ENV === 'development' ? [...common, ...development] : [...common, ...production],
       },
     };
 
@@ -52,7 +57,7 @@ const postCSS = (userOptions = {}) => {
           use: ['css-hot-loader', MiniCssExtractPlugin.loader, ...loaderList],
         },
         plugin: new MiniCssExtractPlugin({
-          filename: '[name].css',
+          filename,
           chunkFilename: '[id].css',
         }),
       },
