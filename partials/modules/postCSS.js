@@ -2,7 +2,7 @@ import installPackages from '../../installPackages';
 
 import partial from '../partial';
 
-const postCSS = (userOptions = {}) => {
+const postCSS = (userOptions = {}, mode) => {
   installPackages([
     'mini-css-extract-plugin',
     'style-loader',
@@ -17,9 +17,10 @@ const postCSS = (userOptions = {}) => {
     const MiniCssExtractPlugin = require('mini-css-extract-plugin');
     const defaultOptions = {
       filename: '[name].css',
+      localIdentName: '[name]__[local]__[hash:base64:5]',
     };
 
-    const { filename, minimize } = Object.assign(
+    const { filename, localIdentName } = Object.assign(
       {},
       defaultOptions,
       userOptions,
@@ -29,7 +30,7 @@ const postCSS = (userOptions = {}) => {
       loader: 'css-loader',
       options: {
         modules: true,
-        localIdentName: '[name]__[local]__[hash:base64:5]',
+        localIdentName,
       },
     };
 
@@ -38,13 +39,16 @@ const postCSS = (userOptions = {}) => {
 
     const common = [postCssPresetEnv()];
     const development = [];
-    const production = [...common, cssNano()]
+    const production = [...common, cssNano()];
 
     const postCSSLoader = {
       loader: 'postcss-loader',
       options: {
         indent: 'postcss',
-        plugins: loader => process.env.NODE_ENV === 'development' ? [...common, ...development] : [...common, ...production],
+        plugins: loader =>
+          mode === 'production'
+            ? [...common, ...production]
+            : [...common, ...development],
       },
     };
 
